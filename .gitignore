@@ -2,6 +2,9 @@
 *.slo
 *.lo
 *.o
+*.obj
+*.orig
+*.rej
 *.a
 *.la
 *.lai
@@ -48,5 +51,16 @@ CMakeLists.txt.user*
 # QtCreator 4.8< compilation database 
 compile_commands.json
 
+# Qt Creator Cache
+.qtc_clangd/
+
 # QtCreator local machine specific files for imported projects
 *creator.user*
+
+*_qmlcache.qrc
+
+# Personal Files And Folders
+debug/
+release/
+image/
+image.qrc
