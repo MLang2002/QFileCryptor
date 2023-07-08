@@ -1,4 +1,6 @@
-﻿#include "flatui.h"
+﻿//#pragma execution_character_set("utf-8")
+
+#include "flatui.h"
 #include "qpushbutton.h"
 #include "qlineedit.h"
 #include "qprogressbar.h"
@@ -84,6 +86,7 @@ QString FlatUI::setSliderQss(QSlider *slider, int sliderHeight,
                         "background:qradialgradient(spread:pad,cx:0.5,cy:0.5,radius:0.5,fx:0.5,fy:0.5,stop:0.6 %1,stop:0.8 %2);}")
                 .arg(handleColor).arg(handleBorderColor).arg(handleWidth).arg(handleOffset).arg(handleRadius));
 
+    //偏移一个像素
     handleWidth = handleWidth + 1;
     list.append(QString("QSlider::vertical{min-width:%1px;}").arg(sliderHeight * 2));
     list.append(QString("QSlider::groove:vertical{background:%1;width:%2px;border-radius:%3px;}")
@@ -126,10 +129,14 @@ QString FlatUI::setScrollBarQss(QWidget *scroll, int radius, int min, int max,
                                 const QString &handleHoverColor,
                                 const QString &handlePressedColor)
 {
+    //滚动条离背景间隔
     int padding = 0;
 
     QStringList list;
 
+    //handle:指示器,滚动条拉动部分 add-page:滚动条拉动时增加的部分 sub-page:滚动条拉动时减少的部分 add-line:递增按钮 sub-line:递减按钮
+
+    //横向滚动条部分
     list.append(QString("QScrollBar:horizontal{background:%1;padding:%2px;border-radius:%3px;min-height:%4px;max-height:%4px;}")
                 .arg(bgColor).arg(padding).arg(radius).arg(max));
     list.append(QString("QScrollBar::handle:horizontal{background:%1;min-width:%2px;border-radius:%3px;}")
@@ -143,6 +150,7 @@ QString FlatUI::setScrollBarQss(QWidget *scroll, int radius, int min, int max,
     list.append(QString("QScrollBar::add-line:horizontal{background:none;}"));
     list.append(QString("QScrollBar::sub-line:horizontal{background:none;}"));
 
+    //纵向滚动条部分
     list.append(QString("QScrollBar:vertical{background:%1;padding:%2px;border-radius:%3px;min-width:%4px;max-width:%4px;}")
                 .arg(bgColor).arg(padding).arg(radius).arg(max));
     list.append(QString("QScrollBar::handle:vertical{background:%1;min-height:%2px;border-radius:%3px;}")

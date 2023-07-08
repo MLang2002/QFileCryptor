@@ -6,48 +6,43 @@
 #include <QDebug>
 
 ProgressButton::ProgressButton(QWidget *parent)
-    : QWidget{parent}
-{
+    : QWidget{parent} {
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
-    setFixedHeight(60);
+    setFixedHeight(45);
     setMinimumWidth(140);
     auto font = this->font();
-    font.setPixelSize(24);
+    font.setPixelSize(20);
     setFont(font);
 
     setMouseTracking(true);
 
     connect(this,&ProgressButton::startProcessing,this,&ProgressButton::operationProcessing,Qt::QueuedConnection);
-    connect(this,&ProgressButton::valueChanged,this,[=](int value){
-        if(can_value_modify == true)
-        {
+    connect(this,&ProgressButton::valueChanged,this,[=](int value) {
+        if(can_value_modify == true) {
             progress = value;
             if(value>100)progress=100;
             repaint();
             operationProcessing();
         }
     },Qt::QueuedConnection);
-    connect(this,&ProgressButton::startProcessing,this,[=](){
+    connect(this,&ProgressButton::startProcessing,this,[=]() {
         can_value_modify = true;
     });
-    connect(this,&ProgressButton::closeProcessing,this,[=](){
+    connect(this,&ProgressButton::closeProcessing,this,[=]() {
         can_value_modify = false;
     });
 }
 
-ProgressButton::~ProgressButton()
-{
+ProgressButton::~ProgressButton() {
 
 }
 
-void ProgressButton::paintEvent(QPaintEvent* event)
-{
+void ProgressButton::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing,true);
     auto rect=event->rect();
-    if(buttonState == state::NORMAL || buttonState == state::HOVER)
-    {
+    if(buttonState == state::NORMAL || buttonState == state::HOVER) {
         QPainterPath path;
         path.addRoundedRect(rect,30,30);
         painter.setClipPath(path);
@@ -62,9 +57,7 @@ void ProgressButton::paintEvent(QPaintEvent* event)
         painter.setPen(Qt::white);
         painter.setFont(this->font());
         painter.drawText(rect, Qt::AlignCenter, txt);
-    }
-    else if(buttonState == state::FROM_ROUNDED_CORNERS_TO_ROUNDED || buttonState == state::RECOVERY)
-    {
+    } else if(buttonState == state::FROM_ROUNDED_CORNERS_TO_ROUNDED || buttonState == state::RECOVERY) {
         painter.setBrush(QColor(0x51c582));
         painter.setPen(QPen(QColor(0x45B078),3));
         painter.translate(rect.center());
@@ -72,9 +65,7 @@ void ProgressButton::paintEvent(QPaintEvent* event)
                                       -(rect.height() / 2 - 3),
                                       widthChangeValue * 2,
                                       rect.height() - 6),30,30);
-    }
-    else if(buttonState == state::OPEN_PROGRESS)
-    {
+    } else if(buttonState == state::OPEN_PROGRESS) {
         painter.translate(rect.center());
         auto radiu = (rect.height() - 6) / 2 -3;
         painter.setBrush(QColor(0x51c582));
@@ -88,9 +79,7 @@ void ProgressButton::paintEvent(QPaintEvent* event)
 
         auto angle = progress * 360 / 100;
         painter.drawArc(rect.adjusted(-3,-3,3,3),90 * 16,-static_cast<int>(angle * 16));
-    }
-    else if(buttonState == state::CLOSE_PROGRESS)
-    {
+    } else if(buttonState == state::CLOSE_PROGRESS) {
         auto radiu = (rect.height() - 6) / 2;
         painter.translate(rect.center());
         painter.setPen(Qt::transparent);
@@ -101,8 +90,7 @@ void ProgressButton::paintEvent(QPaintEvent* event)
         painter.setBrush(Qt::white);
         painter.drawEllipse(QPoint(0,0),radiu,radiu);
 
-        switch(this->buttonItem)
-        {
+        switch(this->buttonItem) {
         case symbol_flag::CORRECT:
             painter.setPen(QPen(QColor("#4DAF51"),3,Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin));
             painter.drawLine(QPoint(-radiu / 3,0),
@@ -121,54 +109,45 @@ void ProgressButton::paintEvent(QPaintEvent* event)
     }
 }
 
-void ProgressButton::enterEvent(QEvent* event)
-{
-    if(buttonState == state::NORMAL)
-    {
+void ProgressButton::enterEvent(QEvent* event) {
+    if(buttonState == state::NORMAL) {
         buttonState = state::HOVER;
         update();
     }
     QWidget::enterEvent(event);
 }
 
-void ProgressButton::leaveEvent(QEvent* event)
-{
-    if(buttonState == state::HOVER)
-    {
+void ProgressButton::leaveEvent(QEvent* event) {
+    if(buttonState == state::HOVER) {
         buttonState = state::NORMAL;
         update();
     }
     QWidget::leaveEvent(event);
 }
 
-void ProgressButton::mousePressEvent(QMouseEvent* event)
-{
-    if(buttonState == state::HOVER || buttonState == state::NORMAL)
-    {
+void ProgressButton::mousePressEvent(QMouseEvent* event) {
+    if(buttonState == state::HOVER || buttonState == state::NORMAL) {
         buttonState = state::FROM_ROUNDED_CORNERS_TO_ROUNDED;
+//        widthChangeValue = (this->width() - 6) / 2;
+//        timer.start();
         onTriggering();
         update();
-    }
-    else if(buttonState == state::CLOSE_PROGRESS)
-    {
+    } else if(buttonState == state::CLOSE_PROGRESS) {
         buttonState = state::RECOVERY;
+//        timer.start();
         onTriggering();
         update();
     }
     QWidget::mousePressEvent(event);
 }
 
-void ProgressButton::onTriggering()
-{
-    if(buttonState == state::FROM_ROUNDED_CORNERS_TO_ROUNDED)
-    {
+void ProgressButton::onTriggering() {
+    if(buttonState == state::FROM_ROUNDED_CORNERS_TO_ROUNDED) {
         widthChangeValue = this->height();
         buttonState = state::OPEN_PROGRESS;
         progress = 0;
         emit startProcessing();
-    }
-    else
-    {
+    } else {
         widthChangeValue = this->width()/2;
         buttonState = state::NORMAL;
         emit closeProcessing();
@@ -176,10 +155,8 @@ void ProgressButton::onTriggering()
     update();
 }
 
-void ProgressButton::operationProcessing()
-{
-    if(progress == 100)
-    {
+void ProgressButton::operationProcessing() {
+    if(progress == 100) {
         buttonState = state::CLOSE_PROGRESS;
         update();
         auto waterDrop = new WaterDrop();
@@ -188,29 +165,24 @@ void ProgressButton::operationProcessing()
     }
 }
 
-void ProgressButton::setTxt(const QString& val)
-{
+void ProgressButton::setTxt(const QString& val) {
     this->txt=val;
 }
 
-QString ProgressButton::Txt()
-{
+QString ProgressButton::Txt() {
     return this->txt;
 }
 
-void ProgressButton::RequireValueChange(int val)
-{
+void ProgressButton::RequireValueChange(int val) {
     emit valueChanged(val);
 }
 
-void ProgressButton::setButtonPattern(const bool flag)
-{
+void ProgressButton::setButtonPattern(const bool flag) {
     if(flag) this->buttonItem=symbol_flag::CORRECT;
     else this->buttonItem=symbol_flag::ERROR;
 }
 
-bool ProgressButton::ButtonPattern() const
-{
+bool ProgressButton::ButtonPattern() const {
     if(this->buttonItem==symbol_flag::CORRECT) return true;
     return false;
 }
@@ -220,8 +192,7 @@ const int RADIUS = 60;
 WaterDrop::WaterDrop(QWidget* parent)
     : QWidget(parent),
       m_waterDropAnimation(nullptr),
-      m_animationRadius(0)
-{
+      m_animationRadius(0) {
 
     this->setFixedSize(QSize(RADIUS * 2, RADIUS * 2));
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
@@ -230,19 +201,16 @@ WaterDrop::WaterDrop(QWidget* parent)
     m_waterDropAnimation = new QVariantAnimation(this);
 }
 
-WaterDrop::~WaterDrop()
-{
+WaterDrop::~WaterDrop() {
 
 }
 
-void WaterDrop::move(const QPoint &point)
-{
+void WaterDrop::move(const QPoint &point) {
     QPoint translatePoint = point - QPoint(RADIUS, RADIUS);
     QWidget::move(translatePoint);
 }
 
-void WaterDrop::show()
-{
+void WaterDrop::show() {
     m_waterDropAnimation->setStartValue(0);
     m_waterDropAnimation->setEndValue(RADIUS);
     m_waterDropAnimation->setDuration(350);
@@ -253,8 +221,7 @@ void WaterDrop::show()
     QWidget::show();
 }
 
-void WaterDrop::paintEvent(QPaintEvent *event)
-{
+void WaterDrop::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     QPen pen;
@@ -264,8 +231,7 @@ void WaterDrop::paintEvent(QPaintEvent *event)
     painter.drawEllipse(event->rect().center(),m_animationRadius, m_animationRadius);
 }
 
-void WaterDrop::onRaduisChanged(QVariant value)
-{
+void WaterDrop::onRaduisChanged(QVariant value) {
     m_animationRadius = value.toInt();
     update();
 }

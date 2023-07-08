@@ -12,8 +12,8 @@
 PasswordEditor::PasswordEditor(QWidget *parent)
     : QWidget{parent}
 {
-    QString bgColor = "#FFFFFF";
-    QString borderColor = "#A6B5B8";
+    QString bgColor = "#FFFFFF";    //背景颜色
+    QString borderColor = "#A6B5B8";//边框颜色
 
     pngLabel = new QLabel;
     pngLabel->setAlignment(Qt::AlignCenter);
@@ -22,9 +22,13 @@ PasswordEditor::PasswordEditor(QWidget *parent)
     lineEdit = new QLineEdit;
     lineEdit->setObjectName("lineEdit");
     lineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    lineEdit->setAttribute(Qt::WA_InputMethodEnabled, false);
+    lineEdit->setAttribute(Qt::WA_InputMethodEnabled, false);// 禁用输入法
 
-    lineEdit->setMaxLength(20);
+
+//    QRegExp regx("[0-9a-zA-Z]+$");        // 限制只能输入数字
+//    QValidator *validator = new QRegExpValidator(regx, lineEdit);
+//    lineEdit->setValidator( validator );
+    lineEdit->setMaxLength(20);      // 限制只能输入20位
     lineEdit->setPlaceholderText("Password(<=20 letters)");
 
     lineEdit->setEchoMode(QLineEdit::Password);
@@ -34,11 +38,13 @@ PasswordEditor::PasswordEditor(QWidget *parent)
     frame->setObjectName("framePassword");
 
     QStringList qss;
+//    qss.append(QString("QFrame#framePassword{border:1px solid %1;}").arg(borderColor));
     qss.append(QString("QFrame#framePassword{border-radius:3px;border-style:none;}"));
     qss.append(QString("QLabel{min-width:15px;background-color:%1;}").arg(bgColor));
     qss.append(QString("QLineEdit{background-color:%1;border:none;font:25 11pt 'Times New Roman';}").arg(bgColor));
     frame->setStyleSheet(qss.join(""));
 
+    //将控件按照横向布局排列
     QHBoxLayout *layout = new QHBoxLayout(frame);
     layout->setMargin(0);
     layout->setSpacing(0);

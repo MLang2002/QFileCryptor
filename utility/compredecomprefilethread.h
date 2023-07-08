@@ -23,18 +23,18 @@ signals:
     void decompression_res_signal(ResultE res,quint8 progress,QString remarks = nullptr);
 public slots:
     /*
-     * File Zip
+     * 压缩文件
      */
     void compression_file_run(QString srcPath,QString destPath);
     /*
-     * File Unzip
+     * 解压文件
      */
     void decompression_file_run(QString srcPath,QString destPath);
 public:
     explicit CompreDecompreFileThread(QObject *parent = nullptr);
 private:
     /*
-     * Zip recursively
+     * 遍历压缩文件
      */
     QFileInfoList ergodic_compression_file(QZipWriter *writer,QString rootPath,QString filePath);
 

@@ -13,7 +13,7 @@ public:
     void setKey(const QByteArray& key);
     void setEncryption(bool flag);
     void setAESParameter(QAESEncryption::Aes aes, QAESEncryption::Mode mode, QAESEncryption::Padding padding);
-    void stop();
+    void stop();                        // 停止
     void setHintText(const QString& txt);
     QString getHintText(const QString& filename);
 
@@ -24,9 +24,9 @@ public:
     static QString base64DecryptStr(const QString& plainText);
 
 signals:
-    void start();
-    void showLog(QString log);
-    void finish(bool hasError);
+    void start();                       // 开始
+    void showLog(QString log);          // 日志
+    void finish(bool hasError);         // 结束，并且返回是否出现错误
 
 private:
     void startEncryption();
@@ -39,21 +39,21 @@ private:
     void clear();
 
 private:
-    QString m_strIn;
-    QString m_strOut;
-    QString m_fileSuffix;
-    QByteArray m_key;
-    QByteArray m_iv;
+    QString m_strIn;          // 输入文件路径
+    QString m_strOut;         // 输出文件路径
+    QString m_fileSuffix;     // 文件后缀
+    QByteArray m_key;         // 密钥
+    QByteArray m_iv;          // 偏移
     bool m_encryption = true;
     QAESEncryption::Aes m_aes;
     QAESEncryption::Mode m_mode;
     QAESEncryption::Padding m_padding;
 
-    QByteArray m_dataIn;
-    QByteArray m_dataOut;
-    QByteArray m_md5;
+    QByteArray m_dataIn;     // 输入内容
+    QByteArray m_dataOut;    // 输出内容
+    QByteArray m_md5;        // MD5值
 
-    QByteArray m_head;
+    QByteArray m_head;       // hint内容
 };
 
 #endif // FILEENCRYPTION_H

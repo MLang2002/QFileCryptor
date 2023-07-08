@@ -46,6 +46,7 @@ private:
     };
     state buttonState{state::NORMAL};
     QString txt{"Sure"};
+//    QTimer timer;
     int widthChangeValue=0;
     int progress=0;
 

@@ -3,8 +3,7 @@
 #include <QStringList>
 #include <QTextCodec>
 
-QString FileDirButton::style_fileDirButton()
-{
+QString FileDirButton::style_fileDirButton() {
     QString style="font:25 14pt 'Times New Roman';"
                   "color:white;"
                   "background-color:transparent;"
@@ -13,34 +12,30 @@ QString FileDirButton::style_fileDirButton()
     return style;
 }
 
-QString FileDirButton::style_fileButton()
-{
+QString FileDirButton::style_fileButton() {
     QString style="font:25 14pt 'Times New Roman';"
-                  "color:white;"
+                  "color:black;"
                   "background-color:transparent;"
                   "border-radius:64px;"
                   "border-style:dashed;";
     return style;
 }
 
-QString FileDirButton::style_labelword()
-{
+QString FileDirButton::style_labelword() {
     QString style="font:25 10pt 'Times New Roman';"
                   "color:black;"
                   "background-color:transparent;"
                   "border-style:dashed;";
     return style;
 }
-QString FileDirButton::style_labelhint()
-{
+QString FileDirButton::style_labelhint() {
     QString style="font:25 8pt 'Times New Roman';"
                   "color:black;"
                   "background-color:transparent;"
                   "border-style:dashed;";
     return style;
 }
-QString FileDirButton::style_comboBox()
-{
+QString FileDirButton::style_comboBox() {
     QString style="border:1px solid #242424;"
                   "border-radius:3px;"
                   "padding:2px;"
@@ -51,8 +46,7 @@ QString FileDirButton::style_comboBox()
     return style;
 }
 
-QString FileDirButton::style_textbrowser()
-{
+QString FileDirButton::style_textbrowser() {
     QStringList list;
     list.append(QString("QTextBrowser{"
                         "border:1px solid #242424;"
@@ -94,17 +88,16 @@ QString FileDirButton::style_textbrowser()
     return qss;
 }
 
-std::string UIHelper::qstr2str(const QString& qstr)
-{
+std::string UIHelper::qstr2str(const QString& qstr) {
     QByteArray cdata=qstr.toLocal8Bit();
     return std::string(cdata);
 }
 
-QString UIHelper::str2qstr(const std::string& str){
+QString UIHelper::str2qstr(const std::string& str) {
     return QString::fromLocal8Bit(str.data());
 }
 
-std::string UIHelper::WString2String(const std::wstring& ws){
+std::string UIHelper::WString2String(const std::wstring& ws) {
     std::string strLocale = setlocale(LC_ALL, "");
     const wchar_t* wchSrc = ws.c_str();
     size_t nDestSize = wcstombs(NULL, wchSrc, 0) + 1;
@@ -117,7 +110,7 @@ std::string UIHelper::WString2String(const std::wstring& ws){
     return strResult;
 }
 
-std::wstring String2WString(const std::string& s){
+std::wstring String2WString(const std::string& s) {
     std::string strLocale = setlocale(LC_ALL, "");
     const char* chSrc = s.c_str();
     size_t nDestSize = mbstowcs(NULL, chSrc, 0) + 1;
@@ -130,7 +123,7 @@ std::wstring String2WString(const std::string& s){
     return wstrResult;
 }
 
-QString UIHelper::TextCodeChanger(QString& words,const QString& oldCodec,const QString& newCodec){
+QString UIHelper::TextCodeChanger(QString& words,const QString& oldCodec,const QString& newCodec) {
     QTextCodec* old=QTextCodec::codecForName(oldCodec.toStdString().c_str());
     QTextCodec* newer=QTextCodec::codecForName(newCodec.toStdString().c_str());
     QString unicode=old->toUnicode(words.toLocal8Bit().data());

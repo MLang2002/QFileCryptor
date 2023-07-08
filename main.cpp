@@ -3,11 +3,8 @@
 #include <QApplication>
 #include <QString>
 #include <QDebug>
-#include <QResource>
 
-int main(int argc, char *argv[])
-{
-    QResource::registerResource(qApp->applicationDirPath()+"resource/image-qt_5_15-64.rcc");
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     Widget w;
     w.show();

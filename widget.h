@@ -10,110 +10,111 @@
 #include <QPointer>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class Widget; }
+namespace Ui {
+class Widget;
+}
 QT_END_NAMESPACE
 
 
-class Widget : public QWidget
-{
+class Widget : public QWidget {
     Q_OBJECT
 
-public:
+  public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
-signals:
-    void emitProgress(int value);
-    void backChoose();
+  signals:
+    void emitProgress(int value);//进度更新信号
+    void backChoose();//对应文件/文件夹选择按钮
 
-protected:
+  protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event)override;
 
-private:
-    void initForm();
+  private:
+    void initForm(); //布局设置与初始化
     void initConnection();
-    void startEncryptFile();
-    void startEncryptDir();
-    void startDecryptFile();
-    void startDecryptDir();
-    bool dirZiper();
-    bool dirUnZiper();
+    void startEncryptFile();//加密文件
+    void startEncryptDir();//加密文件夹
+    void startDecryptFile();//解密文件
+    void startDecryptDir();//解密文件夹
+    bool dirZiper();//压缩文件夹
+    bool dirUnZiper();//解压文件夹
 
-private slots:
-    void switchMainPage();
-    void getFilePath();
-    void getDirPath();
-    void startCryption();
+  private slots:
+    void switchMainPage();//切换主页面
+    void getFilePath();//获得文件信息
+    void getDirPath();//获取文件夹信息
+    void startCryption();//开始加解密
 
-private:
+  private:
     int b_state=0; //EMPTY=0,FILE=1,DIR=2
-    QVector<QIcon> picPath{QIcon(":/new/prefix1/image/Adding.png"),
-                           QIcon(":/new/prefix1/image/fileicon.png"),
-                           QIcon(":/new/prefix1/image/foldericon.png")};
+    QVector<QChar> picPath{QChar(0xf067),QChar(0xf016),QChar(0xf114)};
     Ui::Widget *ui;
-    QVector<QWidget*> pages;
-    class QStackedWidget* mainStack;
+    QVector<QWidget*> pages; //存放不同页面
+    class QStackedWidget* mainStack; // 页面container
     int m_MainPageIndex=0;
 
-    //Window Move Member
+    //解决窗体移动问题
     class QPoint m_lastPos;
     bool isPressedWidget;
 
-    enum class ObjectType{
+    //加密对象
+    enum class ObjectType {
         FILE_ENCRYPT,DIR_ENCRYPT,FILE_DECRYPT,DIR_DECRYPT,UNKNOWN
     };
-    struct obj_file_info{
+    struct obj_file_info {
         QString name;//=raw_name+appendix
         QString raw_name;
         QString path;
         QString appendix;
         obj_file_info()=default;
         ~obj_file_info()=default;
-        obj_file_info(const QString& name,const QString& raw_name,const QString& path,const QString&app):name(name),raw_name(raw_name),path(path),appendix(app){}
-        void update(const QString& name,const QString& path)
-        {
+        obj_file_info(const QString& name,const QString& raw_name,const QString& path,const QString&app):name(name),raw_name(raw_name),path(path),appendix(app) {}
+        void update(const QString& name,const QString& path) {
             this->name=name;
             this->path=path;
             auto tmpList=this->name.split(".");
-            if(tmpList.size()>2)
-            {
+            if(tmpList.size()>2) {
                 QStringList resList;
-                for(int i=0;i<tmpList.size()-1;i++)
+                for(int i=0; i<tmpList.size()-1; i++)
                     resList.append(tmpList[i]);
                 this->raw_name=resList.join(".");
-            }
-            else
+            } else
                 this->raw_name=tmpList[0];
             this->appendix=tmpList.size()==1?"":tmpList[tmpList.size()-1];
         }
     };
-    struct obj_dir_info{
+    struct obj_dir_info {
         QString name;//=path+raw_name
         QString raw_name;
         QString path;
         obj_dir_info()=default;
         ~obj_dir_info()=default;
-        void update(const QString&name,const QString& raw_name,const QString& path)
-            {this->name=name;this->raw_name=raw_name;this->path=path;}
+        void update(const QString&name,const QString& raw_name,const QString& path) {
+            this->name=name;
+            this->raw_name=raw_name;
+            this->path=path;
+        }
     };
 
-    ObjectType m_objType=ObjectType::UNKNOWN;//Mode: File/Dir Encryption/Decryption
-    obj_file_info m_fileInfo;//Record File Infomation
-    obj_dir_info m_dirInfo;//Record Directory Infomation
-    //Record Information of AES
+    ObjectType m_objType=ObjectType::UNKNOWN;//工作模式：文件/文件夹、加密/解密
+    obj_file_info m_fileInfo;//文件信息记录体
+    obj_dir_info m_dirInfo;//文件夹信息记录体
+    //AES信息记录体
     int AES_Length=0;
     int AES_Mode=0;
     int AES_Padding=0;
-    //Record important pointers
+    //重要指针信息记录
     class std::array<PasswordEditor*,2> passwdArray;
     QPointer<QLineEdit> hintInput;
     QPointer<QLabel> hintOutput;
     QPointer<ProgressButton> runButton;
 
-    FileEncryption* m_fileEncryption=nullptr;
-    QThread* m_thread=nullptr;
+    //加密工具
+    FileEncryption* m_fileEncryption=nullptr;// 文件加解密对象
+    QThread* m_thread=nullptr;// 文件加解密线程
 
     //zip helper
     class CompreDecompreFileThread *compreDecompreFileThread;
